@@ -193,7 +193,7 @@ BCA4-R-Assignment/
 <td><b>Anishk Butola</b></td>
 <td><a href="assignments/debarred/Anishk_Butola_DEBARRED.R"><code>Anishk_Butola_DEBARRED.R</code></a></td>
 <td>🐛 × 6</td>
-<td><img src="https://img.shields.io/badge/DEBARRED-yellow?style=flat-square" /></td>
+<td><img src="https://img.shields.io/badge/Submitted-pink?style=flat-square" /></td>
 </tr>
 
 <tr>
@@ -211,7 +211,7 @@ BCA4-R-Assignment/
 <td><b>Astha Rana</b></td>
 <td><a href="assignments/debarred/Astha_Rana_DEBARRED.R"><code>Astha_Rana_DEBARRED.R</code></a></td>
 <td>🐛 × 6</td>
-<td><img src="https://img.shields.io/badge/DEBARRED-yellow?style=flat-square" /></td>
+<td><img src="https://img.shields.io/badge/Submitted-pink?style=flat-square" /></td>
 </tr>
 
 <tr>
