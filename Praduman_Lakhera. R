@@ -1,1 +1,162 @@
+# ============================================================
+#  BCA 4th Semester | R Programming Assignment
+#  Student  : Praduman Lakhera
+#  Deadline : 10 April 2026
+# ============================================================
 
+# ── Q1 [Unit 1] Operators: =/<-, %/%, %%, Logical ───────────
+cat("===== Q1: R Operators Deep Dive =====\n")
+
+# <- vs = for assignment
+x  <- 42
+y  = 42
+cat(sprintf("x <- 42 and y = 42  →  identical? %s\n",
+            identical(x, y)))
+cat("NOTE: <- is preferred in R; = is reserved for function args.\n\n")
+
+# Integer division and modulus
+cat("Integer Division (%/%) and Modulus (%%):\n")
+pairs <- list(c(17,5), c(100,7), c(256,16), c(99,11))
+for (p in pairs) {
+  cat(sprintf("  %3d / %2d  → quotient: %2d  remainder: %d\n",
+              p[1], p[2], p[1] %/% p[2], p[1] %% p[2]))
+}
+
+# Application: convert seconds to H:M:S
+total_sec <- 9845L
+hh <- total_sec %/% 3600L
+mm <- (total_sec %% 3600L) %/% 60L
+ss <- total_sec %% 60L
+cat(sprintf("\n%d seconds = %02d:%02d:%02d (HH:MM:SS)\n\n", total_sec, hh, mm, ss))
+
+# Logical operators
+cat("Logical Operators:\n")
+a <- 85; b <- 60; threshold <- 75
+cat(sprintf("  a=%d, b=%d, threshold=%d\n", a, b, threshold))
+cat(sprintf("  a > threshold && b > threshold  : %s (BOTH pass)\n",
+            a > threshold && b > threshold))
+cat(sprintf("  a > threshold || b > threshold  : %s (AT LEAST ONE)\n",
+            a > threshold || b > threshold))
+cat(sprintf("  !(a > threshold)                : %s\n\n",
+            !(a > threshold)))
+
+
+# ── Q2 [Unit 2] Products Data Frame + Net Price ─────────────
+cat("===== Q2: Product Price Calculator =====\n")
+
+products <- data.fr(
+  Product  = c("Laptop","Smartphone","Tablet","Headphones",
+                "Keyboard","Mouse","Monitor","Webcam"),
+  Category = c("Electronics","Electronics","Electronics","Accessories",
+                "Accessories","Accessories","Electronics","Accessories"),
+  Price    = c(55000, 22000, 18000, 3500, 1200, 800, 12000, 1800),
+  Quantity = c(5, 12, 8, 20, 30, 25, 7, 15),
+  Discount = c(10, 15, 8, 20, 5, 12, 7, 18),  # percent
+  stringsAsFactors = FALSE
+)
+
+products$Net_Price   <- round(products$Price * (1 - products$Discount / 100), 2)
+products$Savings     <- products$Price - products$Net_Price
+products$Total_Value <- products$Net_Price * products$Quantity
+
+cat("Product Catalogue:\n")
+print(products)
+
+cat(sprintf("\nTotal Inventory Value  : ₹%s\n",
+            format(sum(products$Total_Value), big.mark = ",")))
+cat(sprintf("Highest Discount Item  : %s (%d%%)\n",
+            products$Product[which.max(products$Discount)],
+            max(products$Discount)))
+cat(sprintf("Most Expensive Item    : %s (₹%s)\n",
+            products$Product[which.max(products$Price)],
+            format(max(products$Price), big.mark = ",")))
+
+# Category summary
+cat("\nCategory-wise Summary:\n")
+for (cat_name in unique(products$Category)) {
+  sub <- products[products$Category == cat_name, ]
+  cat(sprintf("  %-14s: %d items  |  Total Value: ₹%s\n",
+              cat_name, nrow(sub),
+              format(sum(sub$Total_Value), big.mark = ",")))
+}
+cat("\n")
+
+
+# ── Q3 [Unit 2] Scatter Plot + Regression Line ──────────────
+cat("===== Q3: Study Hours vs Marks — Scatter + Regression =====\n")
+
+set.seed(42)
+n           <- 20
+study_hours <- round(runif(n, 2, 10), 1)
+marks       <- round(40 + study_hours * 5.5 + rnorm(n, 0, 4), 1)
+marks       <- pmin(marks, 100)
+
+model  <- lm(marks ~ study_hours)
+r_sq   <- summary(model)$r.squared
+coefs  <- coef(model)
+
+cat(sprintf("Regression Equation: Marks = %.2f + %.2f × Hours\n",
+            coefs[1], coefs[2]))
+cat(sprintf("R²    = %.4f  (%.1f%% variation explained)\n",
+            r_sq, r_sq * 100))
+cat(sprintf("Corr  = %.4f\n\n", cor(study_hours, marks)))
+
+# Prediction
+for (h in c(3, 5, 7, 9)) {
+  predicted <- coefs[1] + coefs[2] * h
+  cat(sprintf("  %d hours study → predicted marks: %.1f\n", h, predicted))
+}
+
+plot(study_hours, marks,
+     col  = "#1976D2",
+     pch  = 19,
+     cex  = 1.2,
+     main = "Study Hours vs Marks (with Regression)",
+     xlab = "Study Hours per Day",
+     ylab = "Marks (out of 100)",
+     xlim = c(0, 12),
+     ylim = c(30, 105))
+abline(model, col = "#D32F2F", lwd = 2.5)
+legend("topleft",
+       legend = c("Students", sprintf("y = %.1f + %.1fx  (R²=%.2f)",
+                                       coefs[1], coefs[2], r_sq)),
+       col  = c("#1976D2","#D32F2F"),
+       pch  = c(19, NA), lty = c(NA,1), lwd = 2)
+cat("\n")
+
+
+# ── Q4 [Unit 3] Factorial with while + Recursion Comparison ─
+cat("===== Q4: Factorial — while Loop vs Recursion =====\n")
+
+# Method 1: while loop
+factorial_while <- function(n) {
+  if (n < 0)  stop("n must be non-negative")
+  if (n == 0) return(1L)
+  result <- 1L
+  i      <- 1L
+  while (i <= n) {
+    result <- result * i
+    i      <- i + 1L
+  }
+  result
+}
+
+# Method 2: recursive
+factorial_rec <- function(n) {
+  if (n < 0) stop("n must be non-negative")
+  if (n <= 1) return(1L)
+  return(n * factorial_rec(n - 1L))
+}
+
+cat(sprintf("%-5s %-12s %-12s %-8s\n",
+            "n", "While-Loop", "Recursive", "Match?"))
+cat(strrep("-", 40), "\n")
+for (n_val in c(0, 1, 3, 5, 7, 10, 12)) {
+  w <- factorial_while(n_val)
+  r <- factorial_rec(n_val)
+  cat(sprintf("%-5d %-12d %-12d %-8s\n",
+              n_val, w, r, ifelse(w == r, "YES", "NO")))
+}
+
+cat("\nDigits in 20! :", nchar(as.character(factorial_while(20))), "\n")
+cat("Value of 15!  :", factorial_while(15), "\n")
